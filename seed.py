@@ -14,8 +14,8 @@ with app.app_context():
     print('Creating user objects...')
 
     # Create some sample user objects
-    user1 = User(first_name='John', last_name='Doe', email='john.doe@example.com', password_hash='password123')
-    user2 = User(first_name='Jane', last_name='Smith', email='jane.smith@example.com', password_hash='password456')
+    user1 = User(first_name='John', last_name='Doe', email='john.doe@example.com', _password_hash='Password123')
+    user2 = User(first_name='Jane', last_name='Smith', email='jane.smith@example.com', _password_hash='Password456')
 
     print('Adding user objects to transaction...')
 
