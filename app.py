@@ -17,6 +17,10 @@ db.init_app(app)
 
 api = Api(app)
 
+class GetUsers(Resource):
+    def get(self):
+        return [user.to_dict(only = ('id','first_name','last_name','email')) for user in User.query.all()], 200
+
 class Signup(Resource):
     def post(self):
         req = request.form.to_dict()
@@ -43,3 +47,4 @@ class Cars(Resource):
 
 api.add_resource(Cars, '/cars')
 api.add_resource(Signup, '/signup')
+api.add_resource(GetUsers, '/users')
