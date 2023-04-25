@@ -18,10 +18,10 @@ db.init_app(app)
 
 api = Api(app)
 
-class Birds(Resource):
+class Cars(Resource):
 
     def get(self):
-        birds = [bird.to_dict() for bird in Bird.query.all()]
-        return make_response(jsonify(birds), 200)
+        cars = [car.to_dict() for car in Car.query.all()]
+        return make_response(jsonify(cars), 200)
 
-api.add_resource(Birds, '/birds')
+api.add_resource(Cars, '/cars')

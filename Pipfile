@@ -11,6 +11,8 @@ flask-sqlalchemy = "*"
 flask-migrate = "*"
 sqlalchemy-serializer = "*"
 flask-restful = "*"
+flask-bcrypt = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
