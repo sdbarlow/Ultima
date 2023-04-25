@@ -1,6 +1,5 @@
 import os
-
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify, make_response, session, request
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from dotenv import load_dotenv
@@ -18,6 +17,25 @@ db.init_app(app)
 
 api = Api(app)
 
+class Signup(Resource):
+    def post(self):
+        req = request.form.to_dict()
+        if req:
+            try:
+                new_user = User(
+                    first_name=req['first_name'],
+                    last_name=req['last_name'],
+                    email=req['email'],
+                )
+                new_user.password_hash = req['password']
+                db.session.add(new_user)
+                db.session.commit()
+                session['user_id'] = new_user.id
+                return new_user.to_dict(only=('id', 'first_name', 'last_name', 'email')), 201
+            except Exception as e:
+                return {'error': str(e)}, 400
+        return {'error': 'No data provided'}, 400
+
 class Cars(Resource):
 
     def get(self):
@@ -25,3 +43,4 @@ class Cars(Resource):
         return make_response(jsonify(cars), 200)
 
 api.add_resource(Cars, '/cars')
+api.add_resource(Signup, '/signup')
