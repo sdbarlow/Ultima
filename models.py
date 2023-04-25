@@ -17,7 +17,7 @@ migrate = Migrate(app, db)
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
-    serialize_rules = ('-rentals.user')
+    serialize_rules = ('-rentals.user',)
 
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String, nullable=False)
@@ -54,7 +54,7 @@ class User(db.Model, SerializerMixin):
 class Car(db.Model, SerializerMixin):
     __tablename__ = 'cars'
 
-    serialize_rules = ('-rentals.car')
+    serialize_rules = ('-rentals.car',)
 
     id = db.Column(db.Integer, primary_key=True)
     make = db.Column(db.String)
@@ -70,7 +70,7 @@ class Car(db.Model, SerializerMixin):
 class Rental(db.Model, SerializerMixin):
     __tablename__ = 'rentals'
 
-    serialize_rules = ('-user.rentals', '-car.rentals')
+    serialize_rules = ('-user.rentals', '-car.rentals',)
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
