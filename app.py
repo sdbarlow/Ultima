@@ -30,7 +30,6 @@ class Signup(Resource):
                 new_user.password_hash = req['password']
                 db.session.add(new_user)
                 db.session.commit()
-                session['user_id'] = new_user.id
                 return new_user.to_dict(only=('id', 'first_name', 'last_name', 'email')), 201
             except Exception as e:
                 return {'error': str(e)}, 400
