@@ -10,6 +10,8 @@ flask-restful = "*"
 sqlalchemy-serializer = "*"
 psycopg2 = "*"
 gunicorn = "*"
+psycopg2-binary = "*"
+flask-sqlalchemy = "*"
 
 [dev-packages]
 
