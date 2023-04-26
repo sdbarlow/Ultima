@@ -132,6 +132,17 @@ class CarsControllerByID(Resource):
         except:
             return {'error': 'Car not found'}, 400
         
+class CarsByLocation(Resource):
+    def get(self):
+        req = request.get_json()
+        if req:
+            try:
+                cars = [car.to_dict() for car in Car.query.filter(Car.location == req['location']).all()]
+                return make_response(jsonify(cars), 200)
+            except Exception as e:
+                return {'error': str(e)}, 400
+        return {'error': 'No data provided'}, 400
+        
 class RentalController(Resource):
     def post(self):
         req = request.get_json()
@@ -187,5 +198,6 @@ api.add_resource(GetUsers, '/users')
 api.add_resource(UsersControllerByID, '/users/<int:id>')
 api.add_resource(Cars, '/cars')
 api.add_resource(CarsControllerByID, '/cars/<int:id>')
+api.add_resource(CarsByLocation, '/carsloc')
 api.add_resource(RentalController, '/rental')
 api.add_resource(RentalControllerByID, '/rental/<int:id>')
