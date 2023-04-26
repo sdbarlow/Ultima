@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from sqlalchemy.orm import validates
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
 from flask_bcrypt import Bcrypt
@@ -50,6 +51,13 @@ class User(db.Model, SerializerMixin):
     def authenticate(self, password):
         return bcrypt.check_password_hash(
             self._password_hash, password.encode('utf-8'))
+    
+    @validates('email')
+    def validate_email(self, key, email):
+        existing_user = User.query.filter(User.email == email).first()
+        if existing_user and existing_user.id != self.id:
+            raise ValueError('Email address already registered')
+        return email
 
 class Car(db.Model, SerializerMixin):
     __tablename__ = 'cars'
