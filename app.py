@@ -17,9 +17,6 @@ db.init_app(app)
 
 api = Api(app)
 
-class GetUsers(Resource):
-    def get(self):
-        return [user.to_dict(only = ('id','first_name','last_name','email')) for user in User.query.all()], 200
 
 class Signup(Resource):
     def post(self):
@@ -54,6 +51,10 @@ class Login(Resource):
                 return {'error': str(e)}, 400
         return {'error': 'No data provided'}, 400
     
+class GetUsers(Resource):
+    def get(self):
+        return [user.to_dict(only = ('id','first_name','last_name','email')) for user in User.query.all()], 200
+    
 class UsersControllerByID(Resource):
     def get(self, id):
         try:
@@ -79,6 +80,57 @@ class UsersControllerByID(Resource):
             return {'message': 'User deleted'}, 200
         except:
             return {'error': 'User not found'}, 400
+
+class Cars(Resource):
+
+    def get(self):
+        cars = [car.to_dict() for car in Car.query.all()]
+        return make_response(jsonify(cars), 200)
+    def post(self):
+        req = request.form.to_dict()
+        if req:
+            try:
+                new_car = Car(
+                    make=req['make'],
+                    model=req['model'],
+                    year=req['year'],
+                    color=req['color'],
+                    price_per_day=req['price_per_day'],
+                    location=req['location']
+                )
+                db.session.add(new_car)
+                db.session.commit()
+                return new_car.to_dict(only=('id', 'make', 'model', 'year', 'color', 'price_per_day', 'location')), 201
+            except Exception as e:
+                return {'error': str(e)}, 400
+        return {'error': 'No data provided'}, 400
+    
+    
+class CarsControllerByID(Resource):
+    def get(self, id):
+        try:
+            return Car.query.filter(Car.id == id).first().to_dict(only = ('id','make','model','year','color','availability','price_per_day','location')), 200
+        except:
+            return {'error': 'Car not found.'}, 400
+    def patch(self, id):
+        req = request.get_json()
+        if req:
+            try:
+                car = Car.query.filter(Car.id == id).first()
+                for attr in req:
+                    setattr(car, attr, req[attr])
+                db.session.commit()
+                return car.to_dict(only = ('id','make','model','year','color','availability','price_per_day','location')), 200
+            except Exception as e:
+                return {'error': str(e)}, 400
+        return {'error': 'request body not found'}, 401
+    def delete(self, id):
+        try:
+            db.session.delete(Car.query.filter(Car.id == id).first())
+            db.session.commit()
+            return {'message': 'Car deleted'}, 200
+        except:
+            return {'error': 'Car not found'}, 400
         
 class RentalController(Resource):
     def post(self):
@@ -128,41 +180,12 @@ class RentalControllerByID(Resource):
         except Exception as e:
             return {'error': str(e)}, 400
 
-class Cars(Resource):
 
-    def get(self):
-        cars = [car.to_dict() for car in Car.query.all()]
-        return make_response(jsonify(cars), 200)
-    
-class CarsControllerByID(Resource):
-    def get(self, id):
-        try:
-            return Car.query.filter(Car.id == id).first().to_dict(only = ('id','make','model','year','color','availability','price_per_day','location')), 200
-        except:
-            return {'error': 'Car not found.'}, 400
-    def patch(self, id):
-        req = request.get_json()
-        if req:
-            try:
-                car = Car.query.filter(Car.id == id).first()
-                for attr in req:
-                    setattr(car, attr, req[attr])
-                db.session.commit()
-                return car.to_dict(only = ('id','make','model','year','color','availability','price_per_day','location')), 200
-            except Exception as e:
-                return {'error': str(e)}, 400
-        return {'error': 'request body not found'}, 401
-    def delete(self, id):
-        try:
-            db.session.delete(Car.query.filter(Car.id == id).first())
-            db.session.commit()
-            return {'message': 'Car deleted'}, 200
-        except:
-            return {'error': 'Car not found'}, 400
-
-api.add_resource(Cars, '/cars')
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
 api.add_resource(GetUsers, '/users')
 api.add_resource(UsersControllerByID, '/users/<int:id>')
+api.add_resource(Cars, '/cars')
+api.add_resource(CarsControllerByID, '/cars/<int:id>')
 api.add_resource(RentalController, '/rental')
+api.add_resource(RentalControllerByID, '/rental/<int:id>')
