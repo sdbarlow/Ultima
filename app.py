@@ -1,5 +1,6 @@
 import os
 from flask import Flask, jsonify, make_response, session, request
+from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from dotenv import load_dotenv
@@ -16,6 +17,7 @@ migrate = Migrate(app, db)
 db.init_app(app)
 
 api = Api(app)
+CORS(app)
 
 
 class Signup(Resource):
