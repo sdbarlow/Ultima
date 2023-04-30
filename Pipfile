@@ -26,6 +26,7 @@ six = "==1.16.0"
 sqlalchemy = "==2.0.10"
 typing-extensions = "==4.5.0"
 werkzeug = "==2.2.3"
+flask-cors = "*"
 
 [dev-packages]
 
