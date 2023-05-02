@@ -4,11 +4,13 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from dotenv import load_dotenv
+import secrets
 
 from models import db, User, Car, Rental
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://sethbarlow:PeeNzWGjQXUnh6lUDg2ta5n4bLQHDcKV@dpg-ch3umdkeoogluma35ihg-a.ohio-postgres.render.com/ultima_app'
+app.secret_key = os.environ.get('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 load_dotenv()
