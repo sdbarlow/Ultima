@@ -35,6 +35,7 @@ class Signup(Resource):
                 new_user.password_hash = req['password']
                 db.session.add(new_user)
                 db.session.commit()
+                session['user_id'] = new_user.id
                 return new_user.to_dict(only=('id', 'first_name', 'last_name', 'email')), 201
             except Exception as e:
                 return {'error': str(e)}, 400
@@ -54,6 +55,12 @@ class Login(Resource):
             except Exception as e:
                 return {'error': str(e)}, 400
         return {'error': 'No data provided'}, 400
+    
+class CheckAuth(Resource):
+    def get(self):
+        if 'user_id' in session:
+            return User.query.filter(User.id == session['user_id']).first().to_dict(only = ('id','first_name','last_name','email')), 200
+        return {'error': 'Not logged in'}, 401
     
 class GetUsers(Resource):
     def get(self):
@@ -209,6 +216,7 @@ class RentalControllerByID(Resource):
 
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
+api.add_resource(CheckAuth, '/check_auth')
 api.add_resource(GetUsers, '/users')
 api.add_resource(UsersControllerByID, '/users/<int:id>')
 api.add_resource(Cars, '/cars')
