@@ -171,7 +171,7 @@ class RentalController(Resource):
         if req:
             try:
                 new_rental = Rental(
-                    user_id=session['user_id'],
+                    user_id=req['user_id'] if 'user_id' in req else None,
                     car_id=req['car_id'] if 'car_id' in req else None,
                     rental_start=req['rental_start'] if 'rental_start' in req else None,
                     rental_end=req['rental_end'] if 'rental_end' in req else None,
