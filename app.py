@@ -69,7 +69,7 @@ class GetUsers(Resource):
 class UsersControllerByID(Resource):
     def get(self, id):
         try:
-            return User.query.filter(User.id == id).first().to_dict(only = ('id','first_name','last_name','email')), 200
+            return User.query.filter(User.id == id).first().to_dictuser.to_dict(only = ('id','first_name','last_name','email','rentals')), 200
         except:
             return {'error': 'User not found.'}, 400
     def patch(self, id):
