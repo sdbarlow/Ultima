@@ -36,7 +36,7 @@ class Signup(Resource):
                 db.session.add(new_user)
                 db.session.commit()
                 session['user_id'] = new_user.id
-                return new_user.to_dict(only=('id', 'first_name', 'last_name', 'email')), 201
+                return new_user.to_dict(only=('id', 'first_name', 'last_name', 'email', 'rentals')), 201
             except Exception as e:
                 return {'error': str(e)}, 400
         return {'error': 'No data provided'}, 400
@@ -179,7 +179,7 @@ class RentalController(Resource):
                 )
                 db.session.add(new_rental)
                 db.session.commit()
-                return new_rental.to_dict(only = ('car_id','created_at','id','rental_end','rental_start', 'total_price', 'updated_at')), 201
+                return new_rental.to_dict(only = ('car_id','created_at','id','rental_end','rental_start', 'total_price', 'updated_at', 'car')), 201
             except Exception as e:
                 return {'error': str(e)}, 400
         return {'error': 'No data provided'}, 400
