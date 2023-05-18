@@ -1,5 +1,6 @@
 import os
 from flask import Flask, jsonify, make_response, session, request
+from sqlalchemy.exc import IntegrityError
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
@@ -39,24 +40,8 @@ class Signup(Resource):
                 db.session.commit()
                 session['user_id'] = new_user.id
                 return new_user.to_dict(only=('id', 'first_name', 'last_name', 'email', 'rentals')), 201
-            except Exception as e:
-                return {'error': str(e)}, 400
-        return {'error': 'No data provided'}, 400
-
-class SignupGoogle(Resource):
-    def post(self):
-        req = request.form.to_dict()
-        if req:
-            try:
-                new_user = User(
-                    first_name=req['first_name'],
-                    last_name=req['last_name'],
-                    email=req['email'],
-                )
-                db.session.add(new_user)
-                db.session.commit()
-                session['user_id'] = new_user.id
-                return new_user.to_dict(only=('id', 'first_name', 'last_name', 'email', 'rentals')), 201
+            except IntegrityError:
+                return {'error': 'Email already exists'}, 409
             except Exception as e:
                 return {'error': str(e)}, 400
         return {'error': 'No data provided'}, 400
