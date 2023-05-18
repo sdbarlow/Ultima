@@ -62,6 +62,21 @@ class Login(Resource):
                 return {'error': str(e)}, 400
         return {'error': 'No data provided'}, 400
     
+class LoginGoogle(Resource):
+    def post(self):
+        req = request.form.to_dict()
+        if req:
+            try:
+                user = User.query.filter(User.email == req['email']).first()
+                if user:
+                    session['user_id'] = user.id
+                    db.session.commit()
+                    return user.to_dict(only = ('id','first_name','last_name','email','rentals')), 200
+                return {'error': 'Invalid credentials'}, 400
+            except Exception as e:
+                return {'error': str(e)}, 400
+        return {'error': 'No data provided'}, 400
+    
 class CheckAuth(Resource):
     def get(self):
         if 'user_id' in session:
@@ -222,6 +237,7 @@ class RentalControllerByID(Resource):
 
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
+api.add_resource(LoginGoogle, '/logingoogle')
 api.add_resource(CheckAuth, '/check_auth')
 api.add_resource(GetUsers, '/users')
 api.add_resource(UsersControllerByID, '/users/<int:id>')
