@@ -6,6 +6,8 @@ from flask_restful import Api, Resource
 from dotenv import load_dotenv
 import secrets
 
+# hello
+
 from models import db, User, Car, Rental
 
 app = Flask(__name__)
@@ -40,6 +42,25 @@ class Signup(Resource):
             except Exception as e:
                 return {'error': str(e)}, 400
         return {'error': 'No data provided'}, 400
+
+class SignupGoogle(Resource):
+    def post(self):
+        req = request.form.to_dict()
+        if req:
+            try:
+                new_user = User(
+                    first_name=req['first_name'],
+                    last_name=req['last_name'],
+                    email=req['email'],
+                )
+                db.session.add(new_user)
+                db.session.commit()
+                session['user_id'] = new_user.id
+                return new_user.to_dict(only=('id', 'first_name', 'last_name', 'email', 'rentals')), 201
+            except Exception as e:
+                return {'error': str(e)}, 400
+        return {'error': 'No data provided'}, 400
+
     
 class Login(Resource):
     def post(self):
@@ -215,6 +236,7 @@ class RentalControllerByID(Resource):
 
 
 api.add_resource(Signup, '/signup')
+api.add_resource(SignupGoogle, '/signupgoogle')
 api.add_resource(Login, '/login')
 api.add_resource(CheckAuth, '/check_auth')
 api.add_resource(GetUsers, '/users')
