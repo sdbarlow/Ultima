@@ -221,7 +221,6 @@ class RentalControllerByID(Resource):
 
 
 api.add_resource(Signup, '/signup')
-api.add_resource(SignupGoogle, '/signupgoogle')
 api.add_resource(Login, '/login')
 api.add_resource(CheckAuth, '/check_auth')
 api.add_resource(GetUsers, '/users')
